@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas de Seres Vivos — Família Capsulidae</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #0a1a12;
+    --bg-mid: #0e2218;
+    --green-deep: #1a3d2b;
+    --green-mid: #2d6a4f;
+    --green-light: #52b788;
+    --gold: #d4a017;
+    --gold-light: #f0c040;
+    --cream: #f5eedc;
+    --text-main: #e8dfc8;
+    --text-dim: #a09070;
+    --border: rgba(82, 183, 136, 0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Crimson Pro', Georgia, serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === BACKGROUND === */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(26,61,43,0.7) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 90%, rgba(29,77,52,0.5) 0%, transparent 60%),
+      radial-gradient(ellipse 100% 50% at 50% 50%, rgba(10,30,18,0.9) 0%, transparent 100%);
+    z-index: -2;
+    pointer-events: none;
+  }
+
+  /*os gradientes*/
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 25%, rgba(82,183,136,0.04) 0%, transparent 40%),
+      radial-gradient(circle at 85% 70%, rgba(82,183,136,0.04) 0%, transparent 40%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  /* === HEADER === */
+  header {
+    text-align: center;
+    padding: 70px 20px 50px;
+    position: relative;
+  }
+
+  .header-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--green-light);
+    border: 1px solid rgba(82,183,136,0.3);
+    padding: 6px 18px;
+    border-radius: 20px;
+    margin-bottom: 22px;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--cream);
+    line-height: 1.1;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 1s ease forwards 0.4s;
+  }
+
+  header h1 span {
+    color: var(--green-light);
+    font-style: italic;
+  }
+
+  .header-sub {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    margin-top: 14px;
+    font-style: italic;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 1s ease forwards 0.6s;
+  }
+
+  .header-line {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green-light), transparent);
+    margin: 30px auto 0;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.8s;
+  }
+
+  /* DNA helix decoration */
+  .dna-decoration {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+    opacity: 0.08;
+  }
+
+  /* === PHYLO TREE BANNER === */
+  .phylo-banner {
+    text-align: center;
+    padding: 10px 20px 50px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 1s;
+  }
+
+  .phylo-banner p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* === GRID === */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 30px 80px;
+  }
+
+  /* === CARD === */
+  .card {
+    position: relative;
+    background: linear-gradient(145deg, rgba(14,34,24,0.95), rgba(10,26,18,0.98));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+    transition:
+      transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+      box-shadow 0.45s ease,
+      border-color 0.4s ease;
+  }
+
+  .card.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+      box-shadow 0.45s ease,
+      border-color 0.4s ease;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(82,183,136,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.5),
+      0 0 30px rgba(82,183,136,0.12),
+      inset 0 1px 0 rgba(82,183,136,0.2);
+    border-color: rgba(82,183,136,0.45);
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  /* Letter badge */
+  .card-letter {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(10,26,18,0.85);
+    border: 1.5px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--gold);
+    z-index: 3;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Image container */
+  .card-img-wrap {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: rgba(5,15,10,0.5);
+  }
+
+  .card-img-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(to top, rgba(10,26,18,1), transparent);
+    z-index: 2;
+  }
+
+  .card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.4s ease;
+    filter: saturate(0.9);
+  }
+
+  .card:hover img {
+    transform: scale(1.08);
+    filter: saturate(1.15) brightness(1.05);
+  }
+
+  /* Card body */
+  .card-body {
+    padding: 18px 20px 22px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 2px;
+    line-height: 1.2;
+  }
+
+  .card-scientific {
+    font-size: 0.82rem;
+    color: var(--green-light);
+    font-style: italic;
+    margin-bottom: 14px;
+    opacity: 0.85;
+  }
+
+  .card-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .stat {
+    background: rgba(26,61,43,0.4);
+    border: 1px solid rgba(82,183,136,0.12);
+    border-radius: 8px;
+    padding: 8px 10px;
+    transition: background 0.3s ease;
+  }
+
+  .card:hover .stat { background: rgba(26,61,43,0.6); }
+
+  .stat-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--green-light);
+    opacity: 0.75;
+    margin-bottom: 3px;
+  }
+
+  .stat-value {
+    font-size: 0.82rem;
+    color: var(--cream);
+    font-weight: 300;
+    line-height: 1.3;
+  }
+
+  .card-desc {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    line-height: 1.65;
+    font-style: italic;
+    padding-top: 12px;
+    border-top: 1px solid rgba(82,183,136,0.1);
+  }
+
+  /* === MODAL === */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5,12,8,0.88);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: linear-gradient(160deg, #0e2218, #0a1a12);
+    border: 1px solid rgba(82,183,136,0.25);
+    border-radius: 20px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.88) translateY(30px);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(82,183,136,0.08);
+  }
+
+  .modal-overlay.active .modal {
+    transform: scale(1) translateY(0);
+  }
+
+  .modal-header {
+    position: relative;
+    height: 260px;
+    overflow: hidden;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .modal-header img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.75);
+  }
+
+  .modal-header-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 30px 28px 20px;
+    background: linear-gradient(to top, rgba(10,26,18,1) 0%, rgba(10,26,18,0.6) 60%, transparent 100%);
+  }
+
+  .modal-letter {
+    display: inline-block;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    opacity: 0.9;
+  }
+
+  .modal-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.1;
+  }
+
+  .modal-scientific {
+    font-size: 0.95rem;
+    color: var(--green-light);
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  .modal-body {
+    padding: 28px;
+  }
+
+  .modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .modal-stat {
+    background: rgba(26,61,43,0.45);
+    border: 1px solid rgba(82,183,136,0.15);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .modal-stat-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--green-light);
+    margin-bottom: 5px;
+    opacity: 0.8;
+  }
+
+  .modal-stat-value {
+    font-size: 0.92rem;
+    color: var(--cream);
+    font-weight: 300;
+    line-height: 1.4;
+  }
+
+  .modal-desc-title {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--green-light);
+    margin-bottom: 8px;
+    opacity: 0.8;
+  }
+
+  .modal-desc-text {
+    font-size: 1rem;
+    color: var(--text-main);
+    line-height: 1.7;
+    font-style: italic;
+    border-left: 2px solid var(--green-mid);
+    padding-left: 14px;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    background: rgba(10,26,18,0.8);
+    border: 1px solid rgba(82,183,136,0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--green-light);
+    font-size: 1.1rem;
+    transition: background 0.2s, transform 0.2s;
+    z-index: 10;
+  }
+
+  .modal-close:hover {
+    background: rgba(45,106,79,0.5);
+    transform: scale(1.1) rotate(90deg);
+  }
+
+  /* === FOOTER === */
+  footer {
+    text-align: center;
+    padding: 40px 20px 60px;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    border-top: 1px solid rgba(82,183,136,0.08);
+    margin-top: 20px;
+  }
+
+  footer span {
+    color: var(--green-light);
+    opacity: 0.7;
+  }
+
+  /* === ANIMATIONS === */
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Particle floating */
+  .particle {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(82,183,136,0.6), transparent);
+    animation: float linear infinite;
+    z-index: 0;
+  }
+
+  @keyframes float {
+    0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 0.4; }
+    100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+  }
+
+  /* Ripple on click */
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(82, 183, 136, 0.3);
+    transform: scale(0);
+    animation: rippleAnim 0.7s ease-out;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  @keyframes rippleAnim {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--green-deep); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--green-mid); }
+</style>
+</head>
+<body>
+
+<!-- Floating particles -->
+<div id="particles"></div>
+
+<header>
+  <div class="dna-decoration">
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" opacity="0.5">
+      <defs>
+        <pattern id="cells" width="80" height="80" patternUnits="userSpaceOnUse">
+          <circle cx="40" cy="40" r="30" fill="none" stroke="rgba(82,183,136,0.15)" stroke-width="0.5"/>
+          <circle cx="40" cy="40" r="18" fill="none" stroke="rgba(82,183,136,0.1)" stroke-width="0.5"/>
+          <circle cx="40" cy="40" r="5" fill="rgba(82,183,136,0.07)"/>
+          <line x1="10" y1="40" x2="30" y2="40" stroke="rgba(82,183,136,0.1)" stroke-width="0.5"/>
+          <line x1="50" y1="40" x2="70" y2="40" stroke="rgba(82,183,136,0.1)" stroke-width="0.5"/>
+          <line x1="40" y1="10" x2="40" y2="30" stroke="rgba(82,183,136,0.1)" stroke-width="0.5"/>
+          <line x1="40" y1="50" x2="40" y2="70" stroke="rgba(82,183,136,0.1)" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#cells)"/>
+    </svg>
+  </div>
+
+  <div class="header-badge">Família Capsulidae · Classificação Filogenética</div>
+  <h1>Atlas dos <span>Seres Vivos</span></h1>
+  <p class="header-sub">Ordem Capsuliformes — 9 espécies descritas</p>
+  <div class="header-line"></div>
+</header>
+
+<section class="phylo-banner">
+  <p>Árvore Filogenética · Origem Comum · Diversificação Adaptativa</p>
+</section>
+
+<!-- Grid dos cards -->
+<!-- como que conserta o source? to tentando tirar essa linha mas ela parece que ta atraplhando mas que codificando-->
+<main class="grid" id="cardGrid">
+
+  <div class="card" data-index="0" style="transition-delay: 0.0s">
+    <div class="card-letter">A</div>
+    <div class="card-img-wrap">
+      <img src="Seres vivos imagem Biologia/SerVivoA.jpeg">
+    </div>
+    <div class="card-body">
+      <div class="card-name">Capsulon rex</div>
+      <div class="card-scientific">Capsulon rex</div>
+      <div class="card-stats">
+        <div class="stat">
+          <div class="stat-label">Habitat</div>
+          <div class="stat-value">Regiões secas e rochosas</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Alimentação</div>
+          <div class="stat-value">Herbívoro</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Defesa</div>
+          <div class="stat-value">Fecha totalmente o corpo quando ameaçado</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Locomoção</div>
+          <div class="stat-value">Rasteja lentamente</div>
+        </div>
+      </div>
+      <p class="card-desc">Casco duro e muito resistente que protege todo o corpo.</p>
+    </div>
+  </div>
+  <div class="card" data-index="1" style="transition-delay: 0.07s">
+    <div class="card-letter">B</div>
+    <div class="card-img-wrap">
+      <img src="Seres vivos imagem Biologia/SerVivoB.jpeg" alt="SerVivoB">
+    </div>
+    <div class="card-body">
+      <div class="card-name">Tuboraptor</div>
+      <div class="card-scientific">Tuboraptor aquosus</div>
+      <div class="card-stats">
+        <div class="stat">
+          <div class="stat-label">Habitat</div>
+          <div class="stat-value">Pântanos e rios</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Alimentação</div>
+          <div class="stat-value">Onívoro</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Defesa</div>
+          <div class="stat-value">Solta jatos de líquido pelo bico</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Locomoção</div>
+          <div class="stat-value">Nada e se arrasta</div>
+        </div>
+      </div>
+      <p class="card-desc">Bico alongado usado para sugar líquidos e alimentos.</p>
+    </div>
+  </div>
+  <div class="card" data-index="2" style="transition-delay: 0.14s">
+    <div class="card-letter">C</div>
+    <div class="card-img-wrap">
+      <img src="Seres vivos imagem Biologia/SerVivoC.jpeg">
+    </div>
+    <div class="card-body">
+      <div class="card-name">Azulon gigante</div>
+      <div class="card-scientific">Azulon fortis</div>
+      <div class="card-stats">
+        <div class="stat">
+          <div class="stat-label">Habitat</div>
+          <div class="stat-value">Montanhas e florestas</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Alimentação</div>
+          <div class="stat-value">Carnívoro</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Defesa</div>
+          <div class="stat-value">Casco grosso e ataque por investida</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Locomoção</div>
+          <div class="stat-value">Anda com passos pesados</div>
+        </div>
+      </div>
+      <p class="card-desc">Corpo robusto e extremamente forte.</p>
+    </div>
+  </div>
+  <div class="card" data-index="3" style="transition-delay: 0.21000000000000002s">
+    <div class="card-letter">D</div>
+    <div class="card-img-wrap">
+      <img src="Seres vivos imagem Biologia/SerVivoD.jpeg" alt="SerVivoD">
+    </div>
+    <div class="card-body">
+      <div class="card-name">Rubratus</div>
+      <div class="card-scientific">Rubratus minimus</div>
+      <div class="card-stats">
+        <div class="stat">
+          <div class="stat-label">Habitat</div>
+          <div class="stat-value">Rochas, desertos e solos arenosos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Alimentação</div>
+          <div class="stat-value">Onívoro</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Defesa</div>
+          <div class="stat-value">Camuflagem vermelha e fuga rápida</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Locomoção</div>
+          <div class="stat-value">Corre rapidamente</div>
+        </div>
+      </div>
+      <p class="card-desc">Pequeno, leve e muito ágil.</p>
+    </div>
+  </div>
+  <div class="card" data-index="4" style="transition-delay: 0.28s">
+    <div class="card-letter">E</div>
+    <div class="card-img-wrap">
+      <img src="Seres vivos imagem Biologia/SerVivoE.jpeg" alt="SerVivoE">
+    </div>
+    <div class="card-body">
+      <div class="card-name">Metallus primus</div>
+      <div class="card-scientific">Metallus subterraneus</div>
+      <div class="card-stats">
+        <div class="stat">
+          <div class="stat-label">Habitat</div>
+          <div class="stat-value">Cavernas subterrâneas</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Alimentação</div>
+          <div class="stat-value">Minerais e cristais</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Defesa</div>
+          <div class="stat-value">Carapaça metálica impenetrável</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Locomoção</div>
+          <div class="stat-value">Rasteja lentamente</div>
+        </div>
+      </div>
+      <p class="card-desc">Corpo metálico e extremamente resistente.</p>
+    </div>
+  </div>
+  <div class="card" data-index="5" style="transition-delay: 0.35000000000000003s">
+    <div class="card-letter">F</div>
+    <div class="card-img-wrap">
+      <img src="seres vivos imagem Biologia/SerVivoF.jpeg" alt="SerVivoF">
+    </div>
+    <div class="card-body">
+      <div class="card-name">Fliptor</div>
+      <div class="card-scientific">Fliptor vorax</div>
+      <div class="card-stats">
+        <div class="stat">
+          <div class="stat-label">Habitat</div>
+          <div class="stat-value">Florestas e campos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Alimentação</div>
+          <div class="stat-value">Carnívoro</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Defesa</div>
+          <div class="stat-value">Fecha a tampa e prende a presa</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Locomoção</div>
+          <div class="stat-value">Salta e se move rapidamente</div>
+        </div>
+      </div>
+      <p class="card-desc">Mandíbula articulada que abre e fecha rapidamente.</p>
+    </div>
+  </div>
+  <div class="card" data-index="6" style="transition-delay: 0.42000000000000004s">
+    <div class="card-letter">G</div>
+    <div class="card-img-wrap">
+      <img src="Seres vivos imagem Biologia/SerVivoG.jpeg"alt="SerVivoG">
+    </div>
+    <div class="card-body">
+      <div class="card-name">Aquaflip</div>
+      <div class="card-scientific">Aquaflip marinus</div>
+      <div class="card-stats">
+        <div class="stat">
+          <div class="stat-label">Habitat</div>
+          <div class="stat-value">Oceanos e mares</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Alimentação</div>
+          <div class="stat-value">Carnívoro</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Defesa</div>
+          <div class="stat-value">Fecha a tampa e cria um jato de água</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Locomoção</div>
+          <div class="stat-value">Nada com membranas laterais</div>
+        </div>
+      </div>
+      <p class="card-desc">Adaptado à vida aquática, rápido e resistente.</p>
+    </div>
+  </div>
+  <div class="card" data-index="7" style="transition-delay: 0.49000000000000005s">
+    <div class="card-letter">H</div>
+    <div class="card-img-wrap">
+      <img src="Seres vivos imagem Biologia/SerVivoH.jpeg" alt="SerVivoH">
+    </div>
+    <div class="card-body">
+      <div class="card-name">Hydron</div>
+      <div class="card-scientific">Hydron filtrus</div>
+      <div class="card-stats">
+        <div class="stat">
+          <div class="stat-label">Habitat</div>
+          <div class="stat-value">Rios, lagos e oceanos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Alimentação</div>
+          <div class="stat-value">Filtrador de partículas</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Defesa</div>
+          <div class="stat-value">Armazena líquidos e solta jatos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Locomoção</div>
+          <div class="stat-value">Flutua e se move lentamente</div>
+        </div>
+      </div>
+      <p class="card-desc">Grande abertura frontal usada para filtrar água.</p>
+    </div>
+  </div>
+  <div class="card" data-index="8" style="transition-delay: 0.56s">
+    <div class="card-letter">I</div>
+    <div class="card-img-wrap">
+      <img src="Seres vivos imagem Biologia/SerVivoI.jpeg" alt="SerVivoI">
+    </div>
+    <div class="card-body">
+      <div class="card-name">Aureus minimus</div>
+      <div class="card-scientific">Aureus minimus</div>
+      <div class="card-stats">
+        <div class="stat">
+          <div class="stat-label">Habitat</div>
+          <div class="stat-value">Solos férteis e subterrâneos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Alimentação</div>
+          <div class="stat-value">Matéria orgânica</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Defesa</div>
+          <div class="stat-value">Enterra-se rapidamente</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Locomoção</div>
+          <div class="stat-value">Escava e se esconde</div>
+        </div>
+      </div>
+      <p class="card-desc">Pequeno, dourado e com alta capacidade de reprodução.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>Ordem <span>Capsuliformes</span> · Família <span>Capsulidae</span> · 9 Espécies · Atlas Filogenético</p>
+</footer>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-header">
+      <img id="modalImg" src="" alt="">
+      <div class="modal-header-overlay">
+        <div class="modal-letter" id="modalLetter"></div>
+        <div class="modal-name" id="modalName"></div>
+        <div class="modal-scientific" id="modalScientific"></div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="modal-stat">
+          <div class="modal-stat-label">Habitat</div>
+          <div class="modal-stat-value" id="modalHabitat"></div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-label">Alimentação</div>
+          <div class="modal-stat-value" id="modalAlimentacao"></div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-label">Defesa</div>
+          <div class="modal-stat-value" id="modalDefesa"></div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-label">Locomoção</div>
+          <div class="modal-stat-value" id="modalLocomocao"></div>
+        </div>
+      </div>
+      <div class="modal-desc-title">Características</div>
+      <p class="modal-desc-text" id="modalCarac"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+const CREATURES = [{"id": "A", "letter": "A", "name": "Capsulon rex", "scientific": "Capsulon rex", "habitat": "Regi\u00f5es secas e rochosas", "alimentacao": "Herb\u00edvoro", "defesa": "Fecha totalmente o corpo quando amea\u00e7ado", "locomocao": "Rasteja lentamente", "caracteristicas": "Casco duro e muito resistente que protege todo o corpo.", "color": "#c8a44a"}, {"id": "B", "letter": "B", "name": "Tuboraptor", "scientific": "Tuboraptor aquosus", "habitat": "P\u00e2ntanos e rios", "alimentacao": "On\u00edvoro", "defesa": "Solta jatos de l\u00edquido pelo bico", "locomocao": "Nada e se arrasta", "caracteristicas": "Bico alongado usado para sugar l\u00edquidos e alimentos.", "color": "#b8962a"}, {"id": "C", "letter": "C", "name": "Azulon gigante", "scientific": "Azulon fortis", "habitat": "Montanhas e florestas", "alimentacao": "Carn\u00edvoro", "defesa": "Casco grosso e ataque por investida", "locomocao": "Anda com passos pesados", "caracteristicas": "Corpo robusto e extremamente forte.", "color": "#3a5f8a"}, {"id": "D", "letter": "D", "name": "Rubratus", "scientific": "Rubratus minimus", "habitat": "Rochas, desertos e solos arenosos", "alimentacao": "On\u00edvoro", "defesa": "Camuflagem vermelha e fuga r\u00e1pida", "locomocao": "Corre rapidamente", "caracteristicas": "Pequeno, leve e muito \u00e1gil.", "color": "#9b2a2a"}, {"id": "E", "letter": "E", "name": "Metallus primus", "scientific": "Metallus subterraneus", "habitat": "Cavernas subterr\u00e2neas", "alimentacao": "Minerais e cristais", "defesa": "Carapa\u00e7a met\u00e1lica impenetr\u00e1vel", "locomocao": "Rasteja lentamente", "caracteristicas": "Corpo met\u00e1lico e extremamente resistente.", "color": "#6b7c8d"}, {"id": "F", "letter": "F", "name": "Fliptor", "scientific": "Fliptor vorax", "habitat": "Florestas e campos", "alimentacao": "Carn\u00edvoro", "defesa": "Fecha a tampa e prende a presa", "locomocao": "Salta e se move rapidamente", "caracteristicas": "Mand\u00edbula articulada que abre e fecha rapidamente.", "color": "#b54a1a"}, {"id": "G", "letter": "G", "name": "Aquaflip", "scientific": "Aquaflip marinus", "habitat": "Oceanos e mares", "alimentacao": "Carn\u00edvoro", "defesa": "Fecha a tampa e cria um jato de \u00e1gua", "locomocao": "Nada com membranas laterais", "caracteristicas": "Adaptado \u00e0 vida aqu\u00e1tica, r\u00e1pido e resistente.", "color": "#1a5a8a"}, {"id": "H", "letter": "H", "name": "Hydron", "scientific": "Hydron filtrus", "habitat": "Rios, lagos e oceanos", "alimentacao": "Filtrador de part\u00edculas", "defesa": "Armazena l\u00edquidos e solta jatos", "locomocao": "Flutua e se move lentamente", "caracteristicas": "Grande abertura frontal usada para filtrar \u00e1gua.", "color": "#1a4a6a"}, {"id": "I", "letter": "I", "name": "Aureus minimus", "scientific": "Aureus minimus", "habitat": "Solos f\u00e9rteis e subterr\u00e2neos", "alimentacao": "Mat\u00e9ria org\u00e2nica", "defesa": "Enterra-se rapidamente", "locomocao": "Escava e se esconde", "caracteristicas": "Pequeno, dourado e com alta capacidade de reprodu\u00e7\u00e3o.", "color": "#b8922a"}];
+
+const IMAGES = {
+  A: "Seres vivos imagem Biologia/SerVivoA.jpeg",
+  B: "Seres vivos imagem Biologia/SerVivoB.jpeg",
+  C: "Seres vivos imagem Biologia/SerVivoC.jpeg",
+  D: "Seres vivos imagem Biologia/SerVivoD.jpeg",
+  E: "Seres vivos imagem Biologia/SerVivoE.jpeg",
+  F: "seres vivos imagem Biologia/SerVivoF.jpeg",
+  G: "Seres vivos imagem Biologia/SerVivoG.jpeg",
+  H: "Seres vivos imagem Biologia/SerVivoH.jpeg",
+  I: "Seres vivos imagem Biologia/SerVivoI.jpeg"
+};
+
+// ===== PARTICLES =====
+(function spawnParticles() {
+  const container = document.getElementById('particles');
+  const count = 18;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      left: ${Math.random() * 100}%;
+      animation-duration: ${Math.random() * 18 + 12}s;
+      animation-delay: ${Math.random() * 15}s;
+      opacity: ${Math.random() * 0.3 + 0.05};
+    `;
+    container.appendChild(p);
+  }
+})();
+
+// ===== INTERSECTION OBSERVER (scroll reveal) =====
+const cards = document.querySelectorAll('.card');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const card = entry.target;
+      const idx = parseInt(card.dataset.index);
+      setTimeout(() => card.classList.add('visible'), idx * 80);
+      observer.unobserve(card);
+    }
+  });
+}, { threshold: 0.08 });
+
+cards.forEach(c => observer.observe(c));
+
+// ===== RIPPLE EFFECT =====
+cards.forEach(card => {
+  card.addEventListener('click', function(e) {
+    const rect = card.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      left: ${e.clientX - rect.left - size/2}px;
+      top: ${e.clientY - rect.top - size/2}px;
+    `;
+    card.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 700);
+    openModal(parseInt(card.dataset.index));
+  });
+});
+
+// ===== MODAL =====
+const overlay = document.getElementById('modalOverlay');
+const modalClose = document.getElementById('modalClose');
+
+function openModal(idx) {
+  const c = CREATURES[idx];
+  document.getElementById('modalImg').src = IMAGES[c.id];
+  document.getElementById('modalLetter').textContent = 'Espécie ' + c.letter;
+  document.getElementById('modalName').textContent = c.name;
+  document.getElementById('modalScientific').textContent = c.scientific;
+  document.getElementById('modalHabitat').textContent = c.habitat;
+  document.getElementById('modalAlimentacao').textContent = c.alimentacao;
+  document.getElementById('modalDefesa').textContent = c.defesa;
+  document.getElementById('modalLocomocao').textContent = c.locomocao;
+  document.getElementById('modalCarac').textContent = c.caracteristicas;
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+modalClose.addEventListener('click', closeModal);
+overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
